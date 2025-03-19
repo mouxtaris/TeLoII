@@ -1,8 +1,8 @@
 import dbConnect
 
-trip = ['ibiza', 'den tha kanoume tipota', '2024-12-12', '2024-12-14', 500, 'polles']
+bus = ['EER-2423', 'ibiza', 2010, 380158, 500, 10, 60]
 
-dbConnect.crowdTrips(trip)
+dbConnect.displayBus("EER-2423")
 
 # trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
 #                    " `trip_start` DATE, `trip_end` DATE ,"
