@@ -9,6 +9,9 @@ connection = mysql.connector.connect(
 cursor = connection.cursor()
 # cursor.close()
 
+def dropTables():
+    cursor.execute("DROP TABLE IF EXISTS buses, trips, bus_drivers, schedules")
+
 # cursor.execute("CREATE TABLE `sql7767099`.`trips` ( `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
 #                " `trip_start` DATE, `trip_end` DATE , `trip_hotel` VARCHAR(20) ,"
 #                " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
@@ -30,14 +33,31 @@ cursor = connection.cursor()
 
 # def crowdTrips(trips):
 # connection.commit()
+# def showTables():
+#     cursor.execute("SHOW TABLES")
+#     print(cursor.fetchall())
 
 
 def createTables():
-    cursor.execute("CREATE TABLE `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
-                   " `trip_start` DATE, `trip_end` DATE ,"
-                   " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
-    cursor.execute("CREATE TABLE `sql7767099`.`buses` (`bus_id` VARCHAR(8) PRIMARY KEY ,`model` VARCHAR(30), `bus_year` INT(7),`bus_km` INT(8), "
-        "`service_cost` FLOAT(10,2), `service_time` INT(3), `operation_cost` FLOAT(10,2))")
+    # cursor.execute("CREATE TABLE `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
+    #                " `trip_start` DATE, `trip_end` DATE ,"
+    #                " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
+    # cursor.execute("CREATE TABLE `sql7767099`.`buses` (`bus_id` VARCHAR(8) PRIMARY KEY ,`model` VARCHAR(30), `bus_year` INT(7),`bus_km` INT(8), "
+    #     "`service_cost` FLOAT(10,2), `service_time` INT(3), `operation_cost` FLOAT(10,2))")
+    # cursor.execute(
+    #     "CREATE TABLE `sql7767099`.`bus_drivers` (`driver_id` INT AUTO_INCREMENT PRIMARY KEY, `driver_name` VARCHAR(25), `driver_lname` VARCHAR(25),"
+    #     " `availability` BOOLEAN, `driver_salary` FLOAT(8,2), `cost_perTrip` FLOAT(8,2),"
+    #      "`driver_hours` FLOAT(5,1),`favoured_destinations` VARCHAR(10))")
+
+    cursor.execute(
+        "CREATE TABLE `sql7767099`.`trip_leaders` (`leader_id` INT(8) AUTO_INCREMENT PRIMARY KEY, `leader_name` VARCHAR(25), `leader_lname` VARCHAR(25),"
+        " `experience` VARCHAR(100), `fav_destinations` VARCHAR(100), `availability` BOOLEAN,"
+         "`cost_perTrip` FLOAT(8,2),`bonus` INT(10))")
+
+    cursor.execute(
+        "CREATE TABLE `sql7767099`.`employees` (`emp_id` INT AUTO_INCREMENT PRIMARY KEY, `emp_name` VARCHAR(25), `emp_lname` VARCHAR(25),"
+        " `working_hours` FLOAT(8,2), `salary` FLOAT(8,2))")
+
 
 
 # function to insert data into trips table
