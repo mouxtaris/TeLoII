@@ -5,6 +5,9 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QH
                              QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QPushButton,
                              QMessageBox, QDateEdit, QFormLayout, QTabWidget)
 from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 class TransportManagementApp(QMainWindow):
     def __init__(self):
@@ -67,6 +70,11 @@ class TransportManagementApp(QMainWindow):
         add_trip_btn = QPushButton("Add Trip")
         add_trip_btn.clicked.connect(self.add_trip)
         input_layout.addRow(add_trip_btn)
+
+        #Add Export Button
+        export_trip_btn = QPushButton("Export Trip")
+        export_trip_btn.clicked.connect(self.export_trip)
+        input_layout.addRow(export_trip_btn)
 
         # Right side - Trips Table
         self.trips_table = QTableWidget()
@@ -348,6 +356,42 @@ class TransportManagementApp(QMainWindow):
 
         except mysql.connector.Error as e:
             QMessageBox.critical(self, "Database Error", f"Could not add bus: {str(e)}")
+
+    def export_trip(self):
+        #Ελέγχει αν έχει επιλεχθεί κάποιο Trip
+            selected_row = self.trips_table.currentRow()
+            if selected_row == -1:
+                QMessageBox.warning(self, "No Selection", "Please select a trip to export.")
+                return
+
+            trip_data = []
+            headers = ["Name", "Description", "Start Date", "End Date", "Cost", "Activities"]
+
+            for col in range(self.trips_table.columnCount()):
+                item = self.trips_table.item(selected_row, col)
+                trip_data.append(item.text() if item else "")
+            #Αποθήκευσει pdf
+            options = QFileDialog.Options()
+            file_path, _ = QFileDialog.getSaveFileName(self, "Save Trip", "", "PDF Files (*.pdf);;All Files (*)",
+                                                       options=options)
+            #Δημιουργεί το PDF
+            if file_path:
+                try:
+                    c = canvas.Canvas(file_path, pagesize=letter)
+                    c.setFont("Helvetica", 12)
+                    c.drawString(100, 750, "Trip Export")
+                    c.line(100, 745, 500, 745)  # Διαχωριστική γραμμή
+
+                    y_position = 720
+                    for header, value in zip(headers, trip_data):
+                        c.drawString(100, y_position, f"{header}: {value}")
+                        y_position -= 20  # Μετακίνηση προς τα κάτω
+
+                    c.save()
+                    QMessageBox.information(self, "Export Successful", f"Trip exported to {file_path}")
+                except Exception as e:
+                    QMessageBox.critical(self, "Export Failed", f"An error occurred: {str(e)}")
+
 
 def main():
     app = QApplication(sys.argv)
