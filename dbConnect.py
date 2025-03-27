@@ -106,6 +106,9 @@ def showTrips():
             "trip_activities": trip_activities
         })
 
+    cursor.close()
+    connection.close()
+
 
 #display a single trip according to the trip_id
 def displayTrip(trip_id):
@@ -126,6 +129,9 @@ def displayTrip(trip_id):
     else:
         print("Trip not found.")
 
+    cursor.close()
+    connection.close()
+
 
 
 
@@ -139,7 +145,6 @@ def crowdBuses(bus_values):
     cursor.close()
     connection.close()
 
-
 def showBuses():
     query = """SELECT * FROM `sql7767099`.`buses`"""
     cursor.execute(query)
@@ -147,13 +152,12 @@ def showBuses():
     for bus in buses:
         print(bus)
 
-
     busesArray = []
     cursor.execute("SELECT * FROM `buses`")
     for bus in cursor.fetchall():
         bus_id, model, bus_year, bus_km, service_cost, service_time, operation_cost = bus
 
-        buses.append({
+        busesArray.append({
             "bus_id": bus_id,
             "model": model,
             "bus_year": bus_year,
@@ -165,6 +169,9 @@ def showBuses():
 
         print(busesArray)
 
+        cursor.close()
+        connection.close()
+
 def displayBus(bus_id):
     query = """SELECT * FROM `sql7767099`.`buses` WHERE bus_id = %s"""
     cursor.execute(query, (bus_id,))
@@ -175,10 +182,47 @@ def displayBus(bus_id):
     else:
         print("Bus not found.")
 
+    cursor.close()
+    connection.close()
 
+def crowdBusDrivers(busDriver_values):
+    query = """INSERT INTO `sql7767099`.`bus_drivers` (driver_id, driver_name, driver_lname, availability, driver_salary,
+     costperTrip, driver_hours, favoured_destinations)
+         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 
+    cursor.execute(query, busDriver_values)
+    connection.commit()
+    cursor.close()
+    connection.close()
 
+def showBusDrivers():
+    query = """SELECT * FROM `sql7767099`.`bus_drivers`"""
+    cursor.execute(query)
+    drivers = cursor.fetchall()
+    for driver in drivers:
+        print(driver)
 
+    driversArray = []
+    cursor.execute("SELECT * FROM `sql7767099`.`bus_drivers`")
+    for driver in drivers:
+        busDrivers = driver_id, driver_name, driver_lname, availability, driver_salary, costperTrip,
+         driver_hours, favoured_destinations
+
+        driversArray.append({
+            "driver_id": driver_id,
+            "driver_name": driver_name,
+            "driver_lname": driver_lname,
+            "availability": availability,
+            "costperTrip" : costperTrip,
+            "driver_salary": driver_salary,
+            "driver_hours": driver_hours,
+            "favoured_destinations": favoured_destinations
+        })
+
+        print(driversArray)
+
+        cursor.close()
+        connection.close()
 
 
 
