@@ -33,16 +33,20 @@ cursor = connection.cursor()
 
 
 def createTables():
-    pass
-    # cursor.execute("CREATE TABLE `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
-    #                " `trip_start` DATE, `trip_end` DATE ,"
-    #                " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
-    # cursor.execute("CREATE TABLE `sql7767099`.`buses` (`bus_id` VARCHAR(8) PRIMARY KEY ,`model` VARCHAR(30), `bus_year` INT(7),`bus_km` INT(8), "
-    #     "`service_cost` FLOAT(10,2), `service_time` INT(3), `operation_cost` FLOAT(10,2))")
-    # cursor.execute(
-    #     "CREATE TABLE `sql7767099`.`bus_drivers` (`driver_id` INT AUTO_INCREMENT PRIMARY KEY, `driver_name` VARCHAR(25), `driver_lname` VARCHAR(25),"
-    #     " `availability` BOOLEAN, `driver_salary` FLOAT(8,2), `cost_perTrip` FLOAT(8,2),"
-    #      "`driver_hours` FLOAT(5,1),`favoured_destinations` VARCHAR(10))")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sql7767099`.`trip_images` (trip_id INT, image_link VARCHAR(100), FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE)")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
+                   " `trip_start` DATE, `trip_end` DATE ,"
+                   " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sql7767099`.`buses` (`bus_id` VARCHAR(8) PRIMARY KEY ,`model` VARCHAR(30), `bus_year` INT(7),`bus_km` INT(8), "
+        "`service_cost` FLOAT(10,2), `service_time` INT(3), `operation_cost` FLOAT(10,2))")
+
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS `sql7767099`.`bus_drivers` (`driver_id` INT AUTO_INCREMENT PRIMARY KEY, `driver_name` VARCHAR(25), `driver_lname` VARCHAR(25),"
+        " `availability` BOOLEAN, `driver_salary` FLOAT(8,2), `cost_perTrip` FLOAT(8,2),"
+         "`driver_hours` FLOAT(5,1),`favoured_destinations` VARCHAR(10))")
 
 
 # function to insert data into trips table
