@@ -9,9 +9,6 @@ connection = mysql.connector.connect(
 cursor = connection.cursor()
 # cursor.close()
 
-def dropTables():
-    cursor.execute("DROP TABLE IF EXISTS buses, trips, bus_drivers, schedules")
-
 # cursor.execute("CREATE TABLE `sql7767099`.`trips` ( `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
 #                " `trip_start` DATE, `trip_end` DATE , `trip_hotel` VARCHAR(20) ,"
 #                " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
@@ -33,12 +30,10 @@ def dropTables():
 
 # def crowdTrips(trips):
 # connection.commit()
-# def showTables():
-#     cursor.execute("SHOW TABLES")
-#     print(cursor.fetchall())
 
 
 def createTables():
+    pass
     # cursor.execute("CREATE TABLE `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
     #                " `trip_start` DATE, `trip_end` DATE ,"
     #                " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
@@ -48,16 +43,6 @@ def createTables():
     #     "CREATE TABLE `sql7767099`.`bus_drivers` (`driver_id` INT AUTO_INCREMENT PRIMARY KEY, `driver_name` VARCHAR(25), `driver_lname` VARCHAR(25),"
     #     " `availability` BOOLEAN, `driver_salary` FLOAT(8,2), `cost_perTrip` FLOAT(8,2),"
     #      "`driver_hours` FLOAT(5,1),`favoured_destinations` VARCHAR(10))")
-
-    cursor.execute(
-        "CREATE TABLE `sql7767099`.`trip_leaders` (`leader_id` INT(8) AUTO_INCREMENT PRIMARY KEY, `leader_name` VARCHAR(25), `leader_lname` VARCHAR(25),"
-        " `experience` VARCHAR(100), `fav_destinations` VARCHAR(100), `availability` BOOLEAN,"
-         "`cost_perTrip` FLOAT(8,2),`bonus` INT(10))")
-
-    cursor.execute(
-        "CREATE TABLE `sql7767099`.`employees` (`emp_id` INT AUTO_INCREMENT PRIMARY KEY, `emp_name` VARCHAR(25), `emp_lname` VARCHAR(25),"
-        " `working_hours` FLOAT(8,2), `salary` FLOAT(8,2))")
-
 
 
 # function to insert data into trips table
@@ -106,10 +91,6 @@ def showTrips():
             "trip_activities": trip_activities
         })
 
-    cursor.close()
-    connection.close()
-
-
 #display a single trip according to the trip_id
 def displayTrip(trip_id):
     query = """SELECT * FROM `sql7767099`.`trips` WHERE trip_id = %s"""
@@ -129,12 +110,6 @@ def displayTrip(trip_id):
     else:
         print("Trip not found.")
 
-    cursor.close()
-    connection.close()
-
-
-
-
 # function to insert data into buses table
 def crowdBuses(bus_values):
     query = """INSERT INTO `sql7767099`.`buses` (bus_id, model, bus_year, bus_km, service_cost, service_time, operation_cost)
@@ -152,12 +127,13 @@ def showBuses():
     for bus in buses:
         print(bus)
 
+
     busesArray = []
     cursor.execute("SELECT * FROM `buses`")
     for bus in cursor.fetchall():
         bus_id, model, bus_year, bus_km, service_cost, service_time, operation_cost = bus
 
-        busesArray.append({
+        buses.append({
             "bus_id": bus_id,
             "model": model,
             "bus_year": bus_year,
@@ -169,9 +145,6 @@ def showBuses():
 
         print(busesArray)
 
-        cursor.close()
-        connection.close()
-
 def displayBus(bus_id):
     query = """SELECT * FROM `sql7767099`.`buses` WHERE bus_id = %s"""
     cursor.execute(query, (bus_id,))
@@ -182,20 +155,17 @@ def displayBus(bus_id):
     else:
         print("Bus not found.")
 
-    cursor.close()
-    connection.close()
-
-def crowdBusDrivers(busDriver_values):
-    query = """INSERT INTO `sql7767099`.`bus_drivers` (driver_id, driver_name, driver_lname, availability, driver_salary,
-     costperTrip, driver_hours, favoured_destinations)
+def crowdBusDrivers(driver_values):
+    query = """INSERT INTO `sql7767099`.`bus_drivers` (driver_id, driver_name, driver_lname, availability, driver_salary, 
+    cost_perTrip, driver_hours, favoured_destinations)
          VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 
-    cursor.execute(query, busDriver_values)
+    cursor.execute(query, driver_values)
     connection.commit()
     cursor.close()
     connection.close()
 
-def showBusDrivers():
+def showDrivers():
     query = """SELECT * FROM `sql7767099`.`bus_drivers`"""
     cursor.execute(query)
     drivers = cursor.fetchall()
@@ -204,28 +174,30 @@ def showBusDrivers():
 
     driversArray = []
     cursor.execute("SELECT * FROM `sql7767099`.`bus_drivers`")
-    for driver in drivers:
-        busDrivers = driver_id, driver_name, driver_lname, availability, driver_salary, costperTrip,
-         driver_hours, favoured_destinations
+    for driver in cursor.fetchall():
+        driver_id, driver_name, driver_lname, availability, driver_salary, cost_perTrip, driver_hours, favoured_destinations = driver
 
-        driversArray.append({
+        drivers.append({
             "driver_id": driver_id,
             "driver_name": driver_name,
             "driver_lname": driver_lname,
             "availability": availability,
-            "costperTrip" : costperTrip,
             "driver_salary": driver_salary,
+            "cost_perTrip": cost_perTrip,
             "driver_hours": driver_hours,
             "favoured_destinations": favoured_destinations
         })
+    print(drivers)
 
-        print(driversArray)
+def displayDriver(driver_id):
+    query = """SELECT * FROM `sql7767099`.`bus_drivers` WHERE driver_id = %s"""
+    cursor.execute(query, (driver_id,))
+    driver = cursor.fetchone()
 
-        cursor.close()
-        connection.close()
-
-
-
+    if driver:
+        print(driver)
+    else:
+        print("Driver not found.")
 
 
 
