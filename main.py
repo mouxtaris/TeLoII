@@ -368,7 +368,7 @@ class TransportManagementApp(QMainWindow):
             headers = ["Name", "Description", "Start Date", "End Date", "Cost", "Activities"]
 
             for col in range(self.trips_table.columnCount()):
-                item = self.trips_table.item(selected_row, col)
+                item = self.trips_table.item(selected_row, col+1)
                 trip_data.append(item.text() if item else "")
             #Αποθήκευσει pdf
             options = QFileDialog.Options()
