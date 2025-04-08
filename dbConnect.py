@@ -33,11 +33,20 @@ cursor = connection.cursor()
 
 
 def createTables():
-    cursor.execute("CREATE TABLE `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sql7767099`.`trip_images` (trip_id INT, image_link VARCHAR(100), FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE)")
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sql7767099`.`trips` (`trip_id` INT AUTO_INCREMENT PRIMARY KEY, `trip_name` VARCHAR(30) , `trip_desc` VARCHAR(300),"
                    " `trip_start` DATE, `trip_end` DATE ,"
                    " `trip_cost` INT(7), `trip_activities` VARCHAR(300))")
-    cursor.execute("CREATE TABLE `sql7767099`.`buses` (`bus_id` VARCHAR(8) PRIMARY KEY ,`model` VARCHAR(30), `bus_year` INT(7),`bus_km` INT(8), "
+
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sql7767099`.`buses` (`bus_id` VARCHAR(8) PRIMARY KEY ,`model` VARCHAR(30), `bus_year` INT(7),`bus_km` INT(8), "
         "`service_cost` FLOAT(10,2), `service_time` INT(3), `operation_cost` FLOAT(10,2))")
+
+    cursor.execute(
+        "CREATE TABLE IF NOT EXISTS `sql7767099`.`bus_drivers` (`driver_id` INT AUTO_INCREMENT PRIMARY KEY, `driver_name` VARCHAR(25), `driver_lname` VARCHAR(25),"
+        " `availability` BOOLEAN, `driver_salary` FLOAT(8,2), `cost_perTrip` FLOAT(8,2),"
+         "`driver_hours` FLOAT(5,1),`favoured_destinations` VARCHAR(10))")
 
 
 # function to insert data into trips table
@@ -86,7 +95,6 @@ def showTrips():
             "trip_activities": trip_activities
         })
 
-
 #display a single trip according to the trip_id
 def displayTrip(trip_id):
     query = """SELECT * FROM `sql7767099`.`trips` WHERE trip_id = %s"""
@@ -106,9 +114,6 @@ def displayTrip(trip_id):
     else:
         print("Trip not found.")
 
-
-
-
 # function to insert data into buses table
 def crowdBuses(bus_values):
     query = """INSERT INTO `sql7767099`.`buses` (bus_id, model, bus_year, bus_km, service_cost, service_time, operation_cost)
@@ -118,7 +123,6 @@ def crowdBuses(bus_values):
     connection.commit()
     cursor.close()
     connection.close()
-
 
 def showBuses():
     query = """SELECT * FROM `sql7767099`.`buses`"""
@@ -155,13 +159,49 @@ def displayBus(bus_id):
     else:
         print("Bus not found.")
 
+def crowdBusDrivers(driver_values):
+    query = """INSERT INTO `sql7767099`.`bus_drivers` (driver_id, driver_name, driver_lname, availability, driver_salary, 
+    cost_perTrip, driver_hours, favoured_destinations)
+         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 
+    cursor.execute(query, driver_values)
+    connection.commit()
+    cursor.close()
+    connection.close()
 
+def showDrivers():
+    query = """SELECT * FROM `sql7767099`.`bus_drivers`"""
+    cursor.execute(query)
+    drivers = cursor.fetchall()
+    for driver in drivers:
+        print(driver)
 
+    driversArray = []
+    cursor.execute("SELECT * FROM `sql7767099`.`bus_drivers`")
+    for driver in cursor.fetchall():
+        driver_id, driver_name, driver_lname, availability, driver_salary, cost_perTrip, driver_hours, favoured_destinations = driver
 
+        drivers.append({
+            "driver_id": driver_id,
+            "driver_name": driver_name,
+            "driver_lname": driver_lname,
+            "availability": availability,
+            "driver_salary": driver_salary,
+            "cost_perTrip": cost_perTrip,
+            "driver_hours": driver_hours,
+            "favoured_destinations": favoured_destinations
+        })
+    print(drivers)
 
+def displayDriver(driver_id):
+    query = """SELECT * FROM `sql7767099`.`bus_drivers` WHERE driver_id = %s"""
+    cursor.execute(query, (driver_id,))
+    driver = cursor.fetchone()
 
-
+    if driver:
+        print(driver)
+    else:
+        print("Driver not found.")
 
 
 
